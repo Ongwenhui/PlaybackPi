@@ -12,41 +12,7 @@ import threading
 import math
 import csv
 
-varymaskers = False
 MEOW = False
-
-calibjsonpath = "/home/pi/mqtt_client/calib.json"
-
-def interpolate(masker,gain):
-    f = open(calibjsonpath, "r")
-    # calib = f.read()
-    # print(calib)
-    calib = json.load(f)
-    # # calib = json.loads(f.read())
-    keepgoing = True
-    counter = 0
-    chosengain = 0
-    while keepgoing == True:
-        currval = abs(gain - calib[masker][counter])
-        if counter < (len(calib[masker])-1):
-            nextval = abs(gain - calib[masker][counter + 1])
-        else: 
-            nextval = abs(gain - calib[masker][0])
-        if nextval >= currval:
-            keepgoing = False
-            chosengain = calib[masker][counter]
-        if counter < (len(calib[masker])-1):
-            counter += 1
-        else:
-            counter = 0
-    if counter>0: 
-        finaldb = counter -1 + 46
-    else:
-        finaldb = 46+37
-
-    # print("chosengain = {}".format(chosengain))
-    # print("counter -1 = {}".format(counter -1))
-    return finaldb
 
 def readcsv(csvfile):
     calibgains = {}
@@ -68,7 +34,7 @@ def readcsv(csvfile):
                 entrycount += 1
     return calibgains
 
-calibgains = readcsv('/home/pi/mqtt_client/Calibrations_final_speaker.csv')
+calibgains = readcsv('/home/pi/maskers/Calibrations_final_speaker.csv')
 
 # mqttENDPOINT = "a5i03kombapo4-ats.iot.ap-southeast-1.amazonaws.com"
 # mqttCLIENT_ID = "AIMEGET"
@@ -80,8 +46,7 @@ calibgains = readcsv('/home/pi/mqtt_client/Calibrations_final_speaker.csv')
 # mqttRANGE = 20
 
 LOCATION_ID = 'ntu-gazebo01'
-optimaldistance = 2.4
-numofspeakers = 4
+
 class soundplayer:
     def __init__(self):
         self.mqttENDPOINT="a5i03kombapo4-ats.iot.ap-southeast-1.amazonaws.com"
@@ -104,7 +69,7 @@ class soundplayer:
         self.maskerpath = "/home/pi/maskers/"
         self.maskergain = 1.2
         self.gainweight = 1    
-        self.maskerdiff =0.0001
+        self.maskerdiff =0.1
         self.gainlimit = 1000
         self.weightedgain = 0
         self.buffersize = 20
@@ -118,10 +83,6 @@ class soundplayer:
         self.maskergainorig = 1
         self.doadiff = 20
         self.ambientspl = 68.1
-
-    def insitucompensate(self, numofspeakers,distance):
-        compensated = round(20*math.log10(distance) - 10*math.log10(numofspeakers))
-        return compensated
 
     def spatialize(self, masker, angle, normalize=True, offset=-65, k=1.0):
         # masker.shape = (n_samples,)2
@@ -179,7 +140,7 @@ class soundplayer:
         print (incomingmsg)
         #print(msgdict['predictions'])
         print("Recommended Masker is: " + str(incomingmsg['predictions'][0]["id"]))
-        print("Recommended Gain is: {} ({}dB)".format(incomingmsg['predictions'][0]["gain"], interpolate(incomingmsg['predictions'][0]["id"],incomingmsg['predictions'][0]["gain"])))
+        print("Recommended Gain is: " + str(incomingmsg['predictions'][0]["gain"]))
         print("BaseSPL is: {}".format(incomingmsg["base_spl"]))
         # data, fs = sf.read(msgdict['predictions'][0]["id"]+'.wav', dtype='float32')  
         # sd.play(data, fs, device=1)
@@ -203,15 +164,12 @@ class soundplayer:
                 if self.maskergain*self.gainweight < self.gainlimit:
                     print("self.maskergain = {}".format(self.maskergain))
                     # print("self.msgdict['predictions'][self.maskercounter]['id']+'.wav' = {}".format(self.msgdict['predictions'][self.maskercounter]["id"]+'.wav'))
-                    # print("round(self.ambientspl + 20*math.log10(self.maskergain)) = {}".format(round(self.ambientspl + 20*math.log10(self.maskergain))))
-                    amssgain = interpolate(self.msgdict['predictions'][self.maskercounter]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
-                    if amssgain >45 and amssgain <= 83:
-                        pass
-                    elif amssgain >83:
-                        amssgain = 83
-                    elif amssgain <46:
-                        amssgain = 46
-                    self.weightedgain = calibgains[self.msgdict['predictions'][self.maskercounter]["id"]+'.wav'][str(amssgain)]
+                    print("round(self.ambientspl + 20*math.log10(self.maskergain)) = {}".format(round(self.ambientspl + 20*math.log10(self.maskergain))))
+                    amssgain = round(self.ambientspl + 20*math.log10(self.maskergain))
+                    if amssgain >45:
+                        self.weightedgain = calibgains[self.msgdict['predictions'][self.maskercounter]["id"]+'.wav'][str(amssgain)]
+                    else:
+                        self.weightedgain = calibgains[self.msgdict['predictions'][self.maskercounter]["id"]+'.wav']["46"]
                     print("self.weightedgain = {}".format(self.weightedgain))
                 else:
                     self.weightedgain = self.gainlimit
@@ -242,15 +200,12 @@ class soundplayer:
                             
                             if (self.msgdict['predictions'][0]["id"] != self.currentmaskerorig) or (abs(self.msgdict['predictions'][0]["gain"]-self.maskergainorig)*self.gainweight>self.maskerdiff) or (abs(self.currentdoa - self.msgdict["doa"])>self.doadiff):
                                 newgain = self.msgdict['predictions'][0]["gain"]
-                                newamssgain = interpolate(self.msgdict['predictions'][0]["id"],newgain) + self.insitucompensate(numofspeakers,optimaldistance)
+                                newamssgain = round(self.ambientspl + 20*math.log10(newgain))
                                 print("newamssgain = {}".format(newamssgain))
-                                if newamssgain >45 and newamssgain <= 83:
-                                    pass
-                                elif newamssgain >83:
-                                    newamssgain = 83
-                                elif newamssgain <46:
-                                    newamssgain = 46
-                                newweightedgain = calibgains[self.msgdict['predictions'][self.maskercounter]["id"]+'.wav'][str(newamssgain)]
+                                if newamssgain >45:
+                                    newweightedgain = calibgains[self.msgdict['predictions'][self.maskercounter]["id"]+'.wav'][str(newamssgain)]
+                                else:
+                                    newweightedgain = calibgains[self.msgdict['predictions'][self.maskercounter]["id"]+'.wav']["46"]
 
                                 newmasker = self.msgdict['predictions'][0]["id"]
                                 self.maskercounter=0
@@ -290,7 +245,7 @@ class soundplayer:
                             data = self.spatialize(f.read(self.blocksize, always_2d=True)*self.weightedgain,self.currentdoa)
                             self.q.put(data, timeout=timeout)
                     self.event.wait()  # Wait until playback is finished
-                if self.maskercounter<4 and varymaskers== True:
+                if self.maskercounter<4:
                     self.maskercounter+=1
                 else:
                     self.maskercounter=0
