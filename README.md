@@ -20,3 +20,9 @@ This function is called for all other scenarios (random ARAUS, top ARAUS, bird_p
 After the initial 30s playback of the masker is done, the evaluation phase will begin after the audio prompt. During the evaluation, the previous masker will be played
 on loop for the participant. At any point during the evaluation phase, the participant can press any key on the keyboard to proceed to the next masker. Note that the
 keyboard input must be done in the terminal that's running the script.
+
+## End of experiment
+The experiment will end after a total of 24 maskers. There will be an audio prompt signalling the end of the experiment.
+
+# Other notes
+I've uploaded this version of the playback pi image into Teams
