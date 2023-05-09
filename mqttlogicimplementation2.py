@@ -93,7 +93,7 @@ calibgains = readcsv('/home/pi/mqtt_client/Calibrations_final_speaker.csv')
 
 #LOCATION_ID = 'ntu-gazebo01'
 LOCATION_ID = 'hollandclose'
-optimaldistance = 2.06 #Punggol MSCP
+optimaldistance = 1 #Punggol MSCP
 numofspeakers = 4
 class soundplayer:
     def __init__(self):
@@ -109,11 +109,11 @@ class soundplayer:
         self.MQTTClient = AWSIoTPyMQTT.AWSIoTMQTTClient(self.mqttCLIENT_ID)
         self.MQTTClient.configureEndpoint(self.mqttENDPOINT, 8883)
         self.MQTTClient.configureCredentials(self.mqttPATH_TO_AMAZON_ROOT_CA_1, self.mqttPATH_TO_PRIVATE_KEY, self.mqttPATH_TO_CERTIFICATE)
-        self.msgdict = {'predictions': [{'rank': 1, 'id': 'bird_00075', 'gain': 0.01793866604566574, 'score': 0.47396957874298096}, {'rank': 2, 'id': 'bird_00075', 'gain': 0.020203232765197754, 'score': 0.47391098737716675}, {'rank': 3, 'id': 'bird_00075', 'gain': 0.02149977907538414, 'score': 0.47387757897377014}, {'rank': 4, 'id': 'bird_00069', 'gain': 0.05129025876522064, 'score': 0.4719516634941101}, {'rank': 5, 'id': 'bird_00075', 'gain': 0.10646381229162216, 'score': 0.47165820002555847}, {'rank': 6, 'id': 'bird_00069', 'gain': 0.10134433209896088, 'score': 0.4705403745174408}, {'rank': 7, 'id': 'bird_00025', 'gain': 0.0057005020789802074, 'score': 0.470207154750824}, {'rank': 8, 'id': 'bird_00069', 'gain': 0.15140660107135773, 'score': 0.46911484003067017}, {'rank': 9, 'id': 'bird_00025', 'gain': 0.08437956869602203, 'score': 0.46776485443115234}, {'rank': 10, 'id': 'bird_00071', 'gain': 0.06381088495254517, 'score': 0.4665457308292389}, {'rank': 11, 'id': 'bird_00069', 'gain': 0.25197258591651917, 'score': 0.46620792150497437}, {'rank': 12, 'id': 'bird_00046', 'gain': 0.07355550676584244, 'score': 0.46558114886283875}], 'base_score': 0.33999258279800415, 
-        'doa': self.currentdoa, 'from': 'ntu-gazebo01', 'timestamp': 1654067860.26, 'base_spl': 68.10846120156562} if not MEOW else {'predictions': [{'rank': 1, 'id': 'meow', 'gain': 1, 'score': 0.47396957874298096}, {'rank': 2, 'id': 'meow', 'gain': 1, 'score': 0.47391098737716675}, {'rank': 3, 'id': 'meow', 'gain': 1, 'score': 0.47387757897377014}, {'rank': 4, 'id': 'meow', 'gain': 1, 'score': 0.4719516634941101}, {'rank': 5, 'id': 'meow', 'gain': 1, 'score': 0.47165820002555847}], 'base_score': 0.33999258279800415, 
-        'doa': self.currentdoa, 'from': 'ntu-gazebo01', 'timestamp': 1654067860.26, 'base_spl': 68.10846120156562}
+        # self.msgdict = {'predictions': [{'rank': 1, 'id': 'bird_00075', 'gain': 0.01793866604566574, 'score': 0.47396957874298096}, {'rank': 2, 'id': 'bird_00075', 'gain': 0.020203232765197754, 'score': 0.47391098737716675}, {'rank': 3, 'id': 'bird_00075', 'gain': 0.02149977907538414, 'score': 0.47387757897377014}, {'rank': 4, 'id': 'bird_00069', 'gain': 0.05129025876522064, 'score': 0.4719516634941101}, {'rank': 5, 'id': 'bird_00075', 'gain': 0.10646381229162216, 'score': 0.47165820002555847}, {'rank': 6, 'id': 'bird_00069', 'gain': 0.10134433209896088, 'score': 0.4705403745174408}, {'rank': 7, 'id': 'bird_00025', 'gain': 0.0057005020789802074, 'score': 0.470207154750824}, {'rank': 8, 'id': 'bird_00069', 'gain': 0.15140660107135773, 'score': 0.46911484003067017}, {'rank': 9, 'id': 'bird_00025', 'gain': 0.08437956869602203, 'score': 0.46776485443115234}, {'rank': 10, 'id': 'bird_00071', 'gain': 0.06381088495254517, 'score': 0.4665457308292389}, {'rank': 11, 'id': 'bird_00069', 'gain': 0.25197258591651917, 'score': 0.46620792150497437}, {'rank': 12, 'id': 'bird_00046', 'gain': 0.07355550676584244, 'score': 0.46558114886283875}], 'base_score': 0.33999258279800415, 
+        # 'doa': self.currentdoa, 'from': 'ntu-gazebo01', 'timestamp': 1654067860.26, 'base_spl': 68.10846120156562} if not MEOW else {'predictions': [{'rank': 1, 'id': 'meow', 'gain': 1, 'score': 0.47396957874298096}, {'rank': 2, 'id': 'meow', 'gain': 1, 'score': 0.47391098737716675}, {'rank': 3, 'id': 'meow', 'gain': 1, 'score': 0.47387757897377014}, {'rank': 4, 'id': 'meow', 'gain': 1, 'score': 0.4719516634941101}, {'rank': 5, 'id': 'meow', 'gain': 1, 'score': 0.47165820002555847}], 'base_score': 0.33999258279800415, 
+        # 'doa': self.currentdoa, 'from': 'ntu-gazebo01', 'timestamp': 1654067860.26, 'base_spl': 68.10846120156562}
         self.fixedmasker = 'playing fixed masker = '
-        #self.msgdict = None
+        self.msgdict = None
         self.currentmasker = "bird_00075" if not MEOW else "meow"
         self.maskerpath = "/home/pi/mqtt_client/maskers/"
         self.maskergain = 1.2
@@ -125,6 +125,8 @@ class soundplayer:
         self.blocksize = 4096
         self.q = queue.Queue()#(maxsize=self.buffersize)
         self.q2 = queue.Queue()
+        self.msgq = None
+        self.msgqeval = None
         self.event = threading.Event()
         self.fadelength = 80
         self.maskercounter = 0
@@ -204,10 +206,11 @@ class soundplayer:
         # self.q.put_nowait(incomingmsg)
         # self.q2.put_nowait(incomingmsg)
         print(incomingmsg)
-        #print(msgdict['predictions'])
-        #print("Recommended Masker is: " + str(incomingmsg['predictions'][0]["id"]))
-        #print("Recommended Gain is: {} ({}dB)".format(incomingmsg['predictions'][0]["gain"], interpolate(incomingmsg['predictions'][0]["id"],incomingmsg['predictions'][0]["gain"])))
-        #print("BaseSPL is: {}".format(incomingmsg["base_spl"]))
+        self.msgq = incomingmsg
+        print(self.msgq['predictions'])
+        print("Recommended Masker is: " + str(incomingmsg['predictions'][0]["id"]))
+        print("Recommended Gain is: {} ({}dB)".format(incomingmsg['predictions'][0]["gain"], interpolate(incomingmsg['predictions'][0]["id"],incomingmsg['predictions'][0]["gain"])))
+        print("BaseSPL is: {}".format(incomingmsg["base_spl"]))
         # data, fs = sf.read(msgdict['predictions'][0]["id"]+'.wav', dtype='float32')  
         # sd.play(data, fs, device=1)
     def ambient(self):
@@ -259,18 +262,18 @@ class soundplayer:
         newmasker = None
         newweightedgain = None
         newdoa = None
-        self.q = queue.Queue(maxsize=self.buffersize)
-        
+        self.msgdict = self.msgq
+        self.msgqeval = self.msgdict
         #why q2?    
         if not self.q2.empty():
-            self.msgdict = self.q2.get_nowait()
+            self.msgdict = self.msgq
             self.ambientspl = self.msgdict["base_spl"]
             
         if self.msgdict != None: #If there is a prediction
             predictionlist =[]
             uniquepredictionlist = []
             for prediction in self.msgdict['predictions']:
-                for indexes in range(12):
+                for indexes in range(7):
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['rank'])
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['id'])
             self.currentmasker1 = uniquepredictionlist[1]
@@ -302,6 +305,7 @@ class soundplayer:
                         amssgain = 83
                     elif amssgain <46:
                         amssgain = 46
+                    print('amss1gain = {}'.format(amssgain))
                     self.weightedgain1 = calibgains[self.msgdict['predictions'][self.maskerindex1]["id"]+'.wav'][str(amssgain)]
                     print("self.weightedgain1 = {}".format(self.weightedgain1))
                 else:
@@ -319,6 +323,7 @@ class soundplayer:
                         amssgain = 83
                     elif amssgain <46:
                         amssgain = 46
+                    print('amss2gain = {}'.format(amssgain))
                     self.weightedgain2 = calibgains[self.msgdict['predictions'][self.maskerindex2]["id"]+'.wav'][str(amssgain)]
                     print("self.weightedgain2 = {}".format(self.weightedgain2))
                 else:
@@ -336,6 +341,7 @@ class soundplayer:
                         amssgain = 83
                     elif amssgain <46:
                         amssgain = 46
+                    print('amss3gain = {}'.format(amssgain))
                     self.weightedgain3 = calibgains[self.msgdict['predictions'][self.maskerindex3]["id"]+'.wav'][str(amssgain)]
                     print("self.weightedgain3 = {}".format(self.weightedgain3))
                 else:
@@ -353,6 +359,7 @@ class soundplayer:
                         amssgain = 83
                     elif amssgain <46:
                         amssgain = 46
+                    print('amss4gain = {}'.format(amssgain))
                     self.weightedgain4 = calibgains[self.msgdict['predictions'][self.maskerindex4]["id"]+'.wav'][str(amssgain)]
                     print("self.weightedgain4 = {}".format(self.weightedgain4))
                 else:
@@ -385,6 +392,7 @@ class soundplayer:
             data2 = f2*self.weightedgain2
             data3 = f3*self.weightedgain3
             data4 = f4*self.weightedgain4 
+            print('{},{},{},{}'.format(self.weightedgain1, self.weightedgain2, self.weightedgain3, self.weightedgain4))
             data = np.empty((len(data1),4))
             for length in range(len(data)):
                 data[length][0] += data1[length]
@@ -394,7 +402,7 @@ class soundplayer:
             print(np.shape(data))
             compGain = math.pow(10,self.insitucompensate(numofspeakers,optimaldistance)/20)
             print('Compensated gain: {} dB'.format(20*math.log10(compGain)))
-            sd.play(data, fs1)
+            sd.play(data*compGain, fs1)
             sd.wait()
             
         except KeyboardInterrupt:
@@ -405,18 +413,17 @@ class soundplayer:
         newmasker = None
         newweightedgain = None
         newdoa = None
-        self.q = queue.Queue(maxsize=self.buffersize)
-        
+        self.msgdict = self.msgqeval
         #why q2?    
         if not self.q2.empty():
-            self.msgdict = self.q2.get_nowait()
+            self.msgdict = self.msgqeval
             self.ambientspl = self.msgdict["base_spl"]
             
         if self.msgdict != None: #If there is a prediction
             predictionlist =[]
             uniquepredictionlist = []
             for prediction in self.msgdict['predictions']:
-                for indexes in range(12):
+                for indexes in range(7):
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['rank'])
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['id'])
             self.currentmasker1 = uniquepredictionlist[1]
@@ -541,7 +548,7 @@ class soundplayer:
             compGain = math.pow(10,self.insitucompensate(numofspeakers,optimaldistance)/20)
             print('Compensated gain: {} dB'.format(20*math.log10(compGain)))
             while True:
-                sd.play(data, fs1, loop=True)
+                sd.play(data*compGain, fs1, loop=True)
                 if is_key_pressed():
                     break
         except KeyboardInterrupt:
@@ -552,15 +559,18 @@ class soundplayer:
         newweightedgain = None
         newdoa = None
         numOfMaskers = 2
-
+        self.msgdict = self.msgq
+        self.msgqeval = self.msgdict
+        #why q2?    
         if not self.q2.empty():
-            self.msgdict = self.q2.get_nowait()
+            self.msgdict = self.msgq
             self.ambientspl = self.msgdict["base_spl"]
+
         if self.msgdict != None: #If there is a prediction
             predictionlist =[]
             uniquepredictionlist = []
             for prediction in self.msgdict['predictions']:
-                for indexes in range(12):
+                for indexes in range(7):
                     predictionlist.append(self.msgdict['predictions'][indexes]['rank'])
                     predictionlist.append(self.msgdict['predictions'][indexes]['id'])
                 for item in predictionlist:
@@ -650,15 +660,17 @@ class soundplayer:
         newweightedgain = None
         newdoa = None
         numOfMaskers = 2
+        self.msgdict = self.msgqeval
 
+        #why q2?    
         if not self.q2.empty():
-            self.msgdict = self.q2.get_nowait()
+            self.msgdict = self.msgqeval
             self.ambientspl = self.msgdict["base_spl"]
         if self.msgdict != None: #If there is a prediction
             predictionlist =[]
             uniquepredictionlist = []
             for prediction in self.msgdict['predictions']:
-                for indexes in range(12):
+                for indexes in range(7):
                     predictionlist.append(self.msgdict['predictions'][indexes]['rank'])
                     predictionlist.append(self.msgdict['predictions'][indexes]['id'])
                 for item in predictionlist:
@@ -749,12 +761,13 @@ class soundplayer:
         newmasker = None
         newweightedgain = None
         newdoa = None
-        self.q = queue.Queue(maxsize=self.buffersize)
-        print(self.msgdict)
-        
+        self.msgdict = self.msgq
+        self.msgqeval = self.msgdict
+        #why q2?    
         if not self.q2.empty():
-            self.msgdict = self.q2.get_nowait()
+            self.msgdict = self.msgq
             self.ambientspl = self.msgdict["base_spl"]
+        
         if self.msgdict != None: #If there is a prediction
             #print("Here")
             print("starting playback again")
@@ -879,12 +892,13 @@ class soundplayer:
         newmasker = None
         newweightedgain = None
         newdoa = None
-        self.q = queue.Queue(maxsize=self.buffersize)
-        print(self.msgdict)
+        self.msgdict = self.msgqeval
         
+        #why q2?    
         if not self.q2.empty():
-            self.msgdict = self.q2.get_nowait()
+            self.msgdict = self.msgqeval
             self.ambientspl = self.msgdict["base_spl"]
+
         if self.msgdict != None: #If there is a prediction
             print("starting playback again")
             # maskercounter: to get index of the master from the dictionary, usually 0 for top masker
@@ -922,7 +936,7 @@ class soundplayer:
             while True:
                 print(self.currentmasker)
                 print("Playing at self.weightedgain = {}".format(self.weightedgain))
-                sd.play(f*self.weightedgain, fs, loop=True)
+                sd.play(f*self.weightedgain*compGain, fs, loop=True)
                 if is_key_pressed():
                     break
         except KeyboardInterrupt:
@@ -971,12 +985,17 @@ class soundplayer:
     # save terminal settings
 
     def soundlooper(self):
-        # #wait for predictions to load first
-        # notprinted_flag = True
-        # while self.q2.empty():
-        #     if notprinted_flag:
-        #         print("Waiting for predictions")
-        #         notprinted_flag = False
+        #wait for predictions to load first
+        notprinted_flag = True
+        while self.msgq == None:
+            if notprinted_flag:
+                print("Waiting for predictions")
+                notprinted_flag = False
+                
+        print('predictions loaded, press any key to proceed')
+        while True:
+            if is_key_pressed():
+                break
         
         nexttrack, nexttrackfs= sf.read(self.maskerpath + 'voiceNextTrack.wav')
         evaluation, evaluationfs = sf.read(self.maskerpath + 'voiceEval.wav')
@@ -1035,6 +1054,11 @@ class soundplayer:
             self.MQTTClient.subscribeAsync(self.mqttTOPIC, 0,messageCallback = self.msgcallback)
             time.sleep(10)
    
+def is_key_pressed():
+    tty.setraw(sys.stdin.fileno())
+    key = sys.stdin.read(1)
+    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+    return key != ''
 
 sp = soundplayer()
 
@@ -1050,12 +1074,6 @@ for i in data.iloc[:, 0]:
     orderlist.append(i)
 print(orderlist)
 predictiondf = pd.DataFrame(columns = ['AMSS', 'Predictions'])
-
-def is_key_pressed():
-    tty.setraw(sys.stdin.fileno())
-    key = sys.stdin.read(1)
-    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
-    return key != ''
 
 settings = termios.tcgetattr(sys.stdin)
 
