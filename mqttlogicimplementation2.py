@@ -205,9 +205,7 @@ class soundplayer:
         incomingmsg=json.loads(message.payload.decode('utf-8'))
         # self.q.put_nowait(incomingmsg)
         # self.q2.put_nowait(incomingmsg)
-        print(incomingmsg)
         self.msgq = incomingmsg
-        print(self.msgq['predictions'])
         print("Recommended Masker is: " + str(incomingmsg['predictions'][0]["id"]))
         print("Recommended Gain is: {} ({}dB)".format(incomingmsg['predictions'][0]["gain"], interpolate(incomingmsg['predictions'][0]["id"],incomingmsg['predictions'][0]["gain"])))
         print("BaseSPL is: {}".format(incomingmsg["base_spl"]))
@@ -273,7 +271,7 @@ class soundplayer:
             predictionlist =[]
             uniquepredictionlist = []
             for prediction in self.msgdict['predictions']:
-                for indexes in range(7):
+                for indexes in range(len(self.msgdict['predictions'])):
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['rank'])
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['id'])
             self.currentmasker1 = uniquepredictionlist[1]
@@ -293,6 +291,9 @@ class soundplayer:
                 self.maskergain2 = self.msgdict['predictions'][self.maskerindex2]["gain"]
                 self.maskergain3 = self.msgdict['predictions'][self.maskerindex3]["gain"]
                 self.maskergain4 = self.msgdict['predictions'][self.maskerindex4]["gain"]
+                appendlist1= [self.currentmasker1, self.maskergain1, self.currentmasker2, self.maskergain2, self.currentmasker3, self.maskergain3, self.currentmasker4, self.currentgain4]
+                appendlist2 = ['AMSS4', appendlist1]         
+                predictiondf.loc[len(predictiondf)] = appendlist2
                 # if self.maskergain (set in previous step) less than gainlimit (set at 1000)
                 if self.maskergain1*self.gainweight < self.gainlimit:
                     print("self.maskergain1 = {}".format(self.maskergain1))
@@ -423,7 +424,7 @@ class soundplayer:
             predictionlist =[]
             uniquepredictionlist = []
             for prediction in self.msgdict['predictions']:
-                for indexes in range(7):
+                for indexes in range(len(self.msgdict['predictions'])):
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['rank'])
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['id'])
             self.currentmasker1 = uniquepredictionlist[1]
@@ -570,7 +571,7 @@ class soundplayer:
             predictionlist =[]
             uniquepredictionlist = []
             for prediction in self.msgdict['predictions']:
-                for indexes in range(7):
+                for indexes in range(len(self.msgdict['predictions'])):
                     predictionlist.append(self.msgdict['predictions'][indexes]['rank'])
                     predictionlist.append(self.msgdict['predictions'][indexes]['id'])
                 for item in predictionlist:
@@ -591,6 +592,9 @@ class soundplayer:
             if (self.msgdict['predictions'][self.maskerindex1]["id"] != self.currentmasker) or (self.msgdict['predictions'][self.maskerindex2]["id"] != self.currentmasker) or (abs(self.msgdict['predictions'][self.maskercounter]["gain"]-self.maskergain)*self.gainweight>self.maskerdiff) or (abs(self.currentdoa - self.msgdict["doa"])>self.doadiff):
                 self.maskergain1 = self.msgdict['predictions'][self.maskerindex1]["gain"]
                 self.maskergain2 = self.msgdict['predictions'][self.maskerindex2]["gain"]
+                appendlist1= [self.currentmasker1, self.maskergain1, self.currentmasker2, self.maskergain2]
+                appendlist2 = ['AMSS2', appendlist1]         
+                predictiondf.loc[len(predictiondf)] = appendlist2
                 # if self.maskergain (set in previous step) less than gainlimit (set at 1000)
                 if self.maskergain1*self.gainweight < self.gainlimit:
                     print("self.maskergain1 = {}".format(self.maskergain1))
@@ -670,7 +674,7 @@ class soundplayer:
             predictionlist =[]
             uniquepredictionlist = []
             for prediction in self.msgdict['predictions']:
-                for indexes in range(7):
+                for indexes in range(len(self.msgdict['predictions'])):
                     predictionlist.append(self.msgdict['predictions'][indexes]['rank'])
                     predictionlist.append(self.msgdict['predictions'][indexes]['id'])
                 for item in predictionlist:
@@ -777,9 +781,9 @@ class soundplayer:
             # self.currentmasker is set to bird_00075 by default
             if (self.msgdict['predictions'][self.maskercounter]["id"] != self.currentmasker) or (abs(self.msgdict['predictions'][self.maskercounter]["gain"]-self.maskergain)*self.gainweight>self.maskerdiff) or (abs(self.currentdoa - self.msgdict["doa"])>self.doadiff):
                 self.maskergain = self.msgdict['predictions'][self.maskercounter]["gain"]
-                predictionlist= [self.currentmasker, self.maskergain]
-                appendlist = ['AMSS', predictionlist]         
-                predictiondf.loc[len(predictiondf)] = appendlist
+                appendlist1= [self.currentmasker, self.maskergain]
+                appendlist2 = ['AMSS', appendlist1]         
+                predictiondf.loc[len(predictiondf)] = appendlist2
                 # if self.maskergain (set in previous step) less than gainlimit (set at 1000)
                 if self.maskergain*self.gainweight < self.gainlimit:
                     print("self.maskergain = {}".format(self.maskergain))
@@ -935,17 +939,14 @@ class soundplayer:
         try:
             f, fs = sf.read(self.maskerpath + self.currentmasker +'.wav')
             data = self.spatialize(f*self.weightedgain, self.currentdoa)
+            print(self.currentmasker)
+            print("Playing at self.weightedgain = {}".format(self.weightedgain))
+            compGain = math.pow(10,self.insitucompensate(numofspeakers,optimaldistance)/20)
+            print('Compensated gain: {} dB'.format(20*math.log10(compGain)))
             while True:
-                print(self.currentmasker)
-                print("Playing at self.weightedgain = {}".format(self.weightedgain))
-                compGain = math.pow(10,self.insitucompensate(numofspeakers,optimaldistance)/20)
-                print('Compensated gain: {} dB'.format(20*math.log10(compGain)))
                 sd.play(f*self.weightedgain*compGain, fs, loop=True)
                 if is_key_pressed():
                     break
-        except KeyboardInterrupt:
-            pass
-
         except KeyboardInterrupt:
             pass
 
