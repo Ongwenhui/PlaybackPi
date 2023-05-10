@@ -649,7 +649,7 @@ class soundplayer:
             print(np.shape(data))
             compGain = math.pow(10,self.insitucompensate(numofspeakers,optimaldistance)/20)
             print('Compensated gain: {} dB'.format(20*math.log10(compGain)))
-            sd.play(data, fs1)
+            sd.play(data*compGain, fs1)
             sd.wait()
         except KeyboardInterrupt:
             pass
@@ -750,7 +750,7 @@ class soundplayer:
             print('Compensated gain: {} dB'.format(20*math.log10(compGain)))
             sd.play(data, fs1)
             while True:
-                sd.play(data, fs1, loop=True)
+                sd.play(data*compGain, fs1, loop=True)
                 if is_key_pressed():
                     break
         except KeyboardInterrupt:
@@ -875,7 +875,9 @@ class soundplayer:
                             # print("reading data")
                             #data = self.spatialize(f.read(self.blocksize, always_2d=True)*self.weightedgain,self.currentdoa)
                             #self.q.put(data, timeout=timeout)
-                            data = f.read(self.blocksize, always_2d=True)*self.weightedgain
+                            compGain = math.pow(10,self.insitucompensate(numofspeakers,optimaldistance)/20)
+                            print('Compensated gain: {} dB'.format(20*math.log10(compGain)))
+                            data = f.read(self.blocksize, always_2d=True)*self.weightedgain*compGain
                             self.q.put(data, timeout=timeout)
                     self.event.wait()  # Wait until playback is finished
                 if self.maskercounter<4 and varymaskers== True:
@@ -936,6 +938,8 @@ class soundplayer:
             while True:
                 print(self.currentmasker)
                 print("Playing at self.weightedgain = {}".format(self.weightedgain))
+                compGain = math.pow(10,self.insitucompensate(numofspeakers,optimaldistance)/20)
+                print('Compensated gain: {} dB'.format(20*math.log10(compGain)))
                 sd.play(f*self.weightedgain*compGain, fs, loop=True)
                 if is_key_pressed():
                     break
