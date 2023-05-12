@@ -266,7 +266,7 @@ class soundplayer:
         if not self.q2.empty():
             self.msgdict = self.msgq
             self.ambientspl = self.msgdict["base_spl"]
-            
+            print(self.msgdict)
         if self.msgdict != None: #If there is a prediction
             predictionlist =[]
             uniquepredictionlist = []
@@ -274,7 +274,6 @@ class soundplayer:
                 for indexes in range(len(self.msgdict['predictions'])):
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['id'])
                     uniquepredictionlist.append(self.msgdict['predictions'][indexes]['rank'])
-            print(uniquepredictionlist)
             prediction3 = uniquepredictionlist[4]
             self.currentmasker1 = uniquepredictionlist[0]
             self.maskerindex1 = uniquepredictionlist[1]-1
@@ -289,7 +288,7 @@ class soundplayer:
             print('index of top 4 maskers = {}, {}, {}, {}'.format(self.maskerindex1, self.maskerindex2, self.maskerindex3, self.maskerindex4))
             # if the masker to be played is not self.currentmasker, set self.maskergain to the gain of the masker to be played
             # self.currentmasker is set to bird_00075 by default
-            if (self.msgdict['predictions'][self.maskerindex1]["id"] != self.currentmasker) or (self.msgdict['predictions'][self.maskerindex2]["id"] != self.currentmasker) or (self.msgdict['predictions'][self.maskerindex3]["id"] != self.currentmasker) or (self.msgdict['predictions'][self.maskerindex4]["id"] != self.currentmasker) or (abs(self.msgdict['predictions'][self.maskercounter]["gain"]-self.maskergain)*self.gainweight>self.maskerdiff) or (abs(self.currentdoa - self.msgdict["doa"])>self.doadiff):
+            if (self.msgdict['predictions'][self.maskerindex1]["id"] != self.currentmasker) or (self.msgdict['predictions'][self.maskerindex2]["id"] != self.currentmasker) or (self.msgdict['predictions'][self.maskerindex3]["id"] != self.currentmasker) or (self.msgdict['predictions'][self.maskerindex4]["id"] != self.currentmasker):
                 self.maskergain1 = self.msgdict['predictions'][self.maskerindex1]["gain"]
                 self.maskergain2 = self.msgdict['predictions'][self.maskerindex2]["gain"]
                 self.maskergain3 = self.msgdict['predictions'][self.maskerindex3]["gain"]
@@ -298,15 +297,16 @@ class soundplayer:
                 if self.maskergain1*self.gainweight < self.gainlimit:
                     print("self.maskergain1 = {}".format(self.maskergain1))
                     # calculate amssgain
-                    amssgain1 = interpolate(self.msgdict['predictions'][self.maskerindex1]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex1]["id"],self.maskergain1) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
-                    if amssgain1 >45 and amssgain1 <= 83:
+                    if amssgain >45 and amssgain <= 83:
                         pass
-                    elif amssgain1 >83:
-                        amssgain1 = 83
-                    elif amssgain1 <46:
-                        amssgain1 = 46
-                    print('amss1gain1 = {}'.format(amssgain1))
+                    elif amssgain >83:
+                        amssgain = 83
+                    elif amssgain <46:
+                        amssgain = 46
+                    print('amss1gain1 = {}'.format(amssgain))
+                    amssgain1 = amssgain
                     self.weightedgain1 = calibgains[self.msgdict['predictions'][self.maskerindex1]["id"]+'.wav'][str(amssgain1)]
                     print("self.weightedgain1 = {}".format(self.weightedgain1))
                 else:
@@ -315,15 +315,16 @@ class soundplayer:
                 if self.maskergain2*self.gainweight < self.gainlimit:
                     print("self.maskergain2 = {}".format(self.maskergain2))
                     # calculate amssgain
-                    amssgain2 = interpolate(self.msgdict['predictions'][self.maskerindex2]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex2]["id"],self.maskergain2) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
-                    if amssgain2 >45 and amssgain2 <= 83:
+                    if amssgain >45 and amssgain <= 83:
                         pass
-                    elif amssgain2 >83:
-                        amssgain2 = 83
-                    elif amssgain2 <46:
-                        amssgain2 = 46
-                    print('amss2gain = {}'.format(amssgain2))
+                    elif amssgain >83:
+                        amssgain = 83
+                    elif amssgain <46:
+                        amssgain = 46
+                    print('amss2gain = {}'.format(amssgain))
+                    amssgain2 = amssgain
                     self.weightedgain2 = calibgains[self.msgdict['predictions'][self.maskerindex2]["id"]+'.wav'][str(amssgain2)]
                     print("self.weightedgain2 = {}".format(self.weightedgain2))
                 else:
@@ -332,15 +333,16 @@ class soundplayer:
                 if self.maskergain3*self.gainweight < self.gainlimit:
                     print("self.maskergain3 = {}".format(self.maskergain3))
                     # calculate amssgain
-                    amssgain3 = interpolate(self.msgdict['predictions'][self.maskerindex3]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex3]["id"],self.maskergain3) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
-                    if amssgain3 >45 and amssgain3 <= 83:
+                    if amssgain >45 and amssgain <= 83:
                         pass
-                    elif amssgain3 >83:
-                        amssgain3 = 83
-                    elif amssgain3 <46:
-                        amssgain3 = 46
-                    print('amss3gain = {}'.format(amssgain3))
+                    elif amssgain >83:
+                        amssgain = 83
+                    elif amssgain <46:
+                        amssgain = 46
+                    amssgain3 = amssgain
+                    print('amss3gain = {}'.format(amssgain))
                     self.weightedgain3 = calibgains[self.msgdict['predictions'][self.maskerindex3]["id"]+'.wav'][str(amssgain3)]
                     print("self.weightedgain3 = {}".format(self.weightedgain3))
                 else:
@@ -349,14 +351,15 @@ class soundplayer:
                 if self.maskergain4*self.gainweight < self.gainlimit:
                     print("self.maskergain4 = {}".format(self.maskergain4))
                     # calculate amssgain
-                    amssgain4 = interpolate(self.msgdict['predictions'][self.maskerindex4]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex4]["id"],self.maskergain4) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
-                    if amssgain4 >45 and amssgain4 <= 83:
+                    if amssgain >45 and amssgain <= 83:
                         pass
-                    elif amssgain4 >83:
-                        amssgain4 = 83
-                    elif amssgain4 <46:
-                        amssgain4 = 46
+                    elif amssgain >83:
+                        amssgain = 83
+                    elif amssgain <46:
+                        amssgain = 46
+                    amssgain4 = amssgain
                     print('amss4gain = {}'.format(amssgain4))
                     self.weightedgain4 = calibgains[self.msgdict['predictions'][self.maskerindex4]["id"]+'.wav'][str(amssgain4)]
                     print("self.weightedgain4 = {}".format(self.weightedgain4))
@@ -452,7 +455,7 @@ class soundplayer:
                 if self.maskergain1*self.gainweight < self.gainlimit:
                     print("self.maskergain1 = {}".format(self.maskergain1))
                     # calculate amssgain
-                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex1]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex1]["id"],self.maskergain1) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
                     if amssgain >45 and amssgain <= 83:
                         pass
@@ -468,7 +471,7 @@ class soundplayer:
                 if self.maskergain2*self.gainweight < self.gainlimit:
                     print("self.maskergain2 = {}".format(self.maskergain2))
                     # calculate amssgain
-                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex2]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex2]["id"],self.maskergain2) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
                     if amssgain >45 and amssgain <= 83:
                         pass
@@ -484,7 +487,7 @@ class soundplayer:
                 if self.maskergain3*self.gainweight < self.gainlimit:
                     print("self.maskergain3 = {}".format(self.maskergain3))
                     # calculate amssgain
-                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex3]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex3]["id"],self.maskergain3) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
                     if amssgain >45 and amssgain <= 83:
                         pass
@@ -500,7 +503,7 @@ class soundplayer:
                 if self.maskergain4*self.gainweight < self.gainlimit:
                     print("self.maskergain4 = {}".format(self.maskergain4))
                     # calculate amssgain
-                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex4]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex4]["id"],self.maskergain4 ) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
                     if amssgain >45 and amssgain <= 83:
                         pass
@@ -596,14 +599,15 @@ class soundplayer:
                 if self.maskergain1*self.gainweight < self.gainlimit:
                     print("self.maskergain1 = {}".format(self.maskergain1))
                     # calculate amssgain
-                    amssgain1 = interpolate(self.msgdict['predictions'][self.maskerindex1]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex1]["id"],self.maskergain1) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
-                    if amssgain1 >45 and amssgain1 <= 83:
+                    if amssgain >45 and amssgain <= 83:
                         pass
-                    elif amssgain1 >83:
-                        amssgain1 = 83
-                    elif amssgain1 <46:
-                        amssgain1 = 46
+                    elif amssgain >83:
+                        amssgain = 83
+                    elif amssgain <46:
+                        amssgain = 46
+                    amssgain1 = amssgain
                     self.weightedgain1 = calibgains[self.msgdict['predictions'][self.maskerindex1]["id"]+'.wav'][str(amssgain1)]
                     print("self.weightedgain1 = {}".format(self.weightedgain1))
                 else:
@@ -612,14 +616,15 @@ class soundplayer:
                 if self.maskergain2*self.gainweight < self.gainlimit:
                     print("self.maskergain2 = {}".format(self.maskergain2))
                     # calculate amssgain
-                    amssgain2 = interpolate(self.msgdict['predictions'][self.maskerindex2]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex2]["id"],self.maskergain2) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
-                    if amssgain2 >45 and amssgain2 <= 83:
+                    if amssgain >45 and amssgain <= 83:
                         pass
-                    elif amssgain2 >83:
-                        amssgain2 = 83
-                    elif amssgain2 <46:
-                        amssgain2 = 46
+                    elif amssgain >83:
+                        amssgain = 83
+                    elif amssgain <46:
+                        amssgain = 46
+                    amssgain2 = amssgain
                     self.weightedgain2 = calibgains[self.msgdict['predictions'][self.maskerindex2]["id"]+'.wav'][str(amssgain2)]
                     print("self.weightedgain2 = {}".format(self.weightedgain2))
                 else:
@@ -702,7 +707,7 @@ class soundplayer:
                 if self.maskergain1*self.gainweight < self.gainlimit:
                     print("self.maskergain1 = {}".format(self.maskergain1))
                     # calculate amssgain
-                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex1]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex1]["id"],self.maskergain1) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
                     if amssgain >45 and amssgain <= 83:
                         pass
@@ -718,7 +723,7 @@ class soundplayer:
                 if self.maskergain2*self.gainweight < self.gainlimit:
                     print("self.maskergain2 = {}".format(self.maskergain2))
                     # calculate amssgain
-                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex2]["id"],self.maskergain) + self.insitucompensate(numofspeakers,optimaldistance)
+                    amssgain = interpolate(self.msgdict['predictions'][self.maskerindex2]["id"],self.maskergain2) + self.insitucompensate(numofspeakers,optimaldistance)
                     # set amssgaint to min 45 and max 83
                     if amssgain >45 and amssgain <= 83:
                         pass
