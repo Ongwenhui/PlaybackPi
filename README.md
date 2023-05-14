@@ -7,6 +7,7 @@ containing all the CSV files detailing the specific orders of masker playback fo
 Run <code>python3 mqttlogicimplementation.py</code> to start the script. There will be a prompt that looks like this:
   Enter the id of the participant (3 digits): 
 Input only the last 3 digits of the participant id e.g. participant_00001 enter only '001'
+There will be a pause while the first batch of predictions is being fetched from IoT Core. After the predictions are fetched, there will be another prompt for a keypress to proceed with the rest of the experiment.
 
 ## Playback
 The initial 30s playback of the selected masker will begin after the audio prompt. There are multiple possible functions that may be called depending on what is in the 'name' column of the CSV:
@@ -15,6 +16,7 @@ The initial 30s playback of the selected masker will begin after the audio promp
 - <code>playmasker</code> is called when name == 'AMSS1'. It plays the top masker from the predictions.
 - <code>playfixedmasker</code> is called by default if name =/= any of the above. It plays the name of the masker at the gain specified by the 'gain' column in the CSV.
 This function is called for all other scenarios (random ARAUS, top ARAUS, bird_prior, water_prior, silence30s).
+(Note: There will be a delay before the maskers are played for <code>play4maskers</code> and <code>play2maskers</code>. This is because the code is generating the 4 channel audio data on the spot).
 
 ## Evaluation
 After the initial 30s playback of the masker is done, the evaluation phase will begin after the audio prompt. During the evaluation, the previous masker will be played
