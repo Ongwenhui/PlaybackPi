@@ -4,7 +4,7 @@ directory containing all the audio files (maskers and audio prompts for playback
 containing all the CSV files detailing the specific orders of masker playback for each participant (for this one, I've uploaded a zip file containing the CSVs instead).
 
 # mqttlogicimplementaion.py usage
-Run <code>python3 mqttlogicimplementation.py</code> to start the script. There will be a prompt that looks like this:
+Run <code>python3 mqttlogicimplementation2.py</code> to start the script. There will be a prompt that looks like this:
   Enter the id of the participant (3 digits): 
 Input only the last 3 digits of the participant id e.g. participant_00001 enter only '001'
 There will be a pause while the first batch of predictions is being fetched from IoT Core. After the predictions are fetched, there will be another prompt for a keypress to proceed with the rest of the experiment.
